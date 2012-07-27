@@ -1,20 +1,18 @@
-class trocla::config {
+class trocla::config (
+  $adapter = undef,
+  $adapter_options = [ 'default' => '' ],
+) {
   require trocla::master
 
   # deploy default config file and link it for trocla cli lookup
   file{
-    "${settings::confdir}/troclarc.yaml":
+    #should be
+    #${settings::confdir}/troclarc.yaml
+    "/var/lib/puppet/troclarc.yaml":
       ensure => present,
-      content => "---\nadapter_options:\n    :path: ${settings::confdir}/trocla_data.yaml\n",
+      content => template('trocla/troclarc.yaml.erb'),
       owner => root,
       group => puppet,
-      mode => 0640;
-    '/etc/troclarc.yaml':
-      ensure => link,
-      target => "${settings::confdir}/troclarc.yaml";
-    "${settings::confdir}/trocla_data.yaml":
-      owner => puppet,
-      group => 0,
-      mode => 0600;
+      mode => 0640
   }
 }
